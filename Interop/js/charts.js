@@ -19,14 +19,16 @@
         covidChart = null;
     }
     const ctx = canvas.getContext("2d");
+    const labels = data.wastewater.labels || [];
+    const values = (data.wastewater.values || []).map((v) => Number(v));
     covidChart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: data.wastewater.labels,
+        labels,
         datasets: [
           {
             label: "Signal SRAS (eaux usees)",
-            data: data.wastewater.values,
+            data: values,
             tension: 0.25,
             borderColor: "#3fd0c9",
             backgroundColor: "rgba(63, 208, 201, 0.15)",
@@ -40,7 +42,6 @@
         responsive: true,
         maintainAspectRatio: false,
         animation: false,
-        parsing: false,
         resizeDelay: 150,
         interaction: { mode: "index", intersect: false },
         plugins: {

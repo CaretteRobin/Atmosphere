@@ -521,84 +521,80 @@ function fetch_traffic(float $lat, float $lon): array
 function fetch_wastewater(string $deptCode): array
 {
     $baseUrl = 'https://odisse.santepubliquefrance.fr/api/explore/v2.1/catalog/datasets/sum-eau-indicateurs/records';
-
-    // Les champs confirmes : semaine, date_complet, commune, station, mesure
-    $queries = [
-        ['where' => 'station like "%%NANCY%%"', 'label' => 'station Nancy'],
-        ['where' => 'station like "%%MAXEVILLE%%"', 'label' => 'station Maxeville'],
-        ['where' => 'commune="NANCY"', 'label' => 'commune Nancy'],
-        ['where' => null, 'label' => 'sans filtre']
+    $where = 'commune="NANCY"';
+    $paramsDesc = [
+        'select' => 'semaine,date_complet,mesure,mesure_national',
+        'where' => $where,
+        'order_by' => 'semaine desc',
+        'limit' => 100
+    ];
+    $paramsAsc = [
+        'select' => 'semaine,date_complet,mesure,mesure_national',
+        'where' => $where,
+        'order_by' => 'semaine asc',
+        'limit' => 100
     ];
 
-    $lastError = null;
-    foreach ($queries as $q) {
-        $params = [
-            'limit' => 20,
-            'order_by' => 'semaine desc'
-        ];
-        if (!empty($q['where'])) {
-            $params['where'] = $q['where'];
-        }
+    $records = [];
+    $urls = [];
+    foreach ([$paramsDesc, $paramsAsc] as $params) {
         $url = $baseUrl . '?' . http_build_query($params);
+        $urls[] = $url;
         $resp = fetch_url($url);
         if (!$resp['ok']) {
-            $lastError = $resp['error'] ?? 'Erreur reseau';
             continue;
         }
         $json = @json_decode($resp['data'], true);
         if (!$json || empty($json['results'])) {
-            $lastError = 'Reponse vide';
             continue;
         }
-
-        $labels = [];
-        $values = [];
         foreach ($json['results'] as $row) {
-            $semaine = $row['semaine'] ?? null;
-            $val = $row['mesure'] ?? $row['mesure_national'] ?? null;
-            if ($semaine === null || $val === null) {
+            $week = $row['semaine'] ?? null;
+            if (!$week) {
                 continue;
             }
-            $labels[] = $semaine;
-            $values[] = (float) $val;
+            $records[$week] = $row;
         }
+    }
 
-        if (!empty($labels) && !empty($values)) {
-            $labels = array_reverse($labels);
-            $values = array_reverse($values);
+    if (empty($records)) {
+        return [
+            'ok' => false,
+            'labels' => [],
+            'values' => [],
+            'trend' => 'indisponible',
+            'url' => implode(' | ', $urls),
+            'error' => 'Donnees SRAS indisponibles',
+            'fallback' => true
+        ];
+    }
 
-            $trendText = 'stable';
-            if (count($values) >= 3) {
-                $diff1 = $values[count($values) - 1] - $values[count($values) - 2];
-                $diff2 = $values[count($values) - 2] - $values[count($values) - 3];
-                $avgDiff = ($diff1 + $diff2) / 2;
-                if ($avgDiff > 5) {
-                    $trendText = 'en hausse';
-                } elseif ($avgDiff < -5) {
-                    $trendText = 'en baisse';
-                }
-            }
+    ksort($records);
+    $labels = [];
+    $values = [];
+    foreach ($records as $week => $row) {
+        $labels[] = $week;
+        $values[] = (float) ($row['mesure'] ?? $row['mesure_national'] ?? 0);
+    }
 
-            return [
-                'ok' => true,
-                'labels' => $labels,
-                'values' => $values,
-                'trend' => $trendText,
-                'url' => $resp['url'] ?? $url
-            ];
+    $trendText = 'stable';
+    if (count($values) >= 3) {
+        $diff1 = $values[count($values) - 1] - $values[count($values) - 2];
+        $diff2 = $values[count($values) - 2] - $values[count($values) - 3];
+        $avgDiff = ($diff1 + $diff2) / 2;
+        if ($avgDiff > 5) {
+            $trendText = 'en hausse';
+        } elseif ($avgDiff < -5) {
+            $trendText = 'en baisse';
         }
-
-        $lastError = 'Pas de valeurs pour filtre ' . $q['label'];
     }
 
     return [
-        'ok' => false,
-        'labels' => [],
-        'values' => [],
-        'trend' => 'indisponible',
-        'url' => $baseUrl,
-        'error' => $lastError ?? 'Donnees SRAS indisponibles',
-        'fallback' => true
+        'ok' => true,
+        'labels' => $labels,
+        'values' => $values,
+        'trend' => $trendText,
+        'url' => implode(' | ', $urls)
     ];
 }
 
@@ -755,7 +751,7 @@ $apiSources = [
     'Qualite de l\'air' => $air['url'] ?? 'n/a'
 ];
 
-$repoLink = 'https://github.com/votre-compte/AtmosphereFinal';
+$repoLink = 'https://github.com/CaretteRobin/Atmosphere.git';
 ?>
 <!doctype html>
 <html lang="fr">
