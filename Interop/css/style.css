@@ -1,0 +1,277 @@
+:root {
+  --bg: #0b1826;
+  --panel: #102338;
+  --muted: #8ca0b3;
+  --text: #e9edf2;
+  --accent: #3fd0c9;
+  --accent-2: #f0b429;
+  --danger: #e6504b;
+  --good: #5ac18e;
+  --shadow: 0 12px 40px rgba(3, 10, 22, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+  background: radial-gradient(120% 120% at 0% 0%, #12304c, #0b1826 55%);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 2.5rem clamp(1rem, 3vw, 3rem);
+  background: linear-gradient(115deg, rgba(63, 208, 201, 0.12), rgba(240, 180, 41, 0.08));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero h1 {
+  margin: 0.2rem 0;
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  letter-spacing: -0.5px;
+}
+
+.lead {
+  color: var(--muted);
+  max-width: 38ch;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: 0.8rem;
+  color: var(--accent-2);
+  margin: 0;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
+
+.warning {
+  color: var(--accent-2);
+}
+
+.decision {
+  background: var(--panel);
+  padding: 1.2rem 1.4rem;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  min-width: 240px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.pill-acceptable {
+  background: rgba(63, 208, 201, 0.1);
+  color: var(--accent);
+}
+
+.pill-deconseille {
+  background: rgba(230, 80, 75, 0.12);
+  color: var(--danger);
+}
+
+.pill-recommande {
+  background: rgba(90, 193, 142, 0.12);
+  color: var(--good);
+}
+
+.content {
+  padding: clamp(1rem, 3vw, 2.5rem);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  gap: 1.4rem;
+  margin-bottom: 1.4rem;
+}
+
+.grid.two {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.3px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.card.wide {
+  grid-column: span 2;
+}
+
+.meteo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.8rem;
+}
+
+.meteo-slot {
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.meteo-slot .icon {
+  font-size: 1.6rem;
+  margin: 0.1rem 0;
+}
+
+.meteo-slot .temp {
+  font-weight: 600;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.source {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.source a {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+#map {
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chart-card {
+  width: 100%;
+}
+
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  max-height: 55vh;
+}
+
+.chart-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.status {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.status-error {
+  color: #ff6b6b;
+}
+
+.air {
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.air-index {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
+.air-bon {
+  background: rgba(90, 193, 142, 0.12);
+  color: var(--good);
+}
+
+.air-moyen {
+  background: rgba(240, 180, 41, 0.12);
+  color: var(--accent-2);
+}
+
+.air-mauvais {
+  background: rgba(230, 80, 75, 0.12);
+  color: var(--danger);
+}
+
+.sources ul {
+  padding-left: 1rem;
+}
+
+.sources li {
+  margin: 0.4rem 0;
+  overflow-wrap: anywhere;
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .card.wide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 15px;
+  }
+  .hero {
+    padding: 1.6rem;
+  }
+  #map {
+    height: 55vh;
+  }
+}
